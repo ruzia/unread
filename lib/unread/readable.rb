@@ -106,7 +106,7 @@ module Unread
       def unread?(reader)
         if self.respond_to?(:read_mark_id)
           # For use with scope "with_read_marks_for"
-          return false if self.read_mark_id
+          return false if self.read_marks.any? { |read_mark| read_mark.reader_id == reader.id && read_mark.reader_type == reader.class.name }
 
           if global_timestamp = reader.read_mark_global(self.class).try(:timestamp)
             self.send(readable_options[:on]) > global_timestamp

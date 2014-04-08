@@ -51,6 +51,12 @@ class UnreadTest < ActiveSupport::TestCase
 
     assert_equal false, emails[0].unread?(@reader)
     assert_equal true, emails[1].unread?(@reader)
+
+    assert_equal true, emails[0].unread?(@other_reader)
+    assert_equal true, emails[1].unread?(@other_reader)
+
+    assert_equal true, emails[0].unread?(@other_class_reader)
+    assert_equal true, emails[1].unread?(@other_class_reader)
   end
 
   def test_scope_param_check
