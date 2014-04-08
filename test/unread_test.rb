@@ -4,6 +4,7 @@ class UnreadTest < ActiveSupport::TestCase
   def setup
     @reader = Reader.create! :name => 'David'
     @other_reader = Reader.create :name => 'Matz'
+    @other_class_reader = OtherClassReader.create name: 'Mike'
     wait
     @email1 = Email.create!
     wait
@@ -12,6 +13,7 @@ class UnreadTest < ActiveSupport::TestCase
 
   def teardown
     Reader.delete_all
+    OtherClassReader.delete_all
     Email.delete_all
     ReadMark.delete_all
     Timecop.return
@@ -25,16 +27,18 @@ class UnreadTest < ActiveSupport::TestCase
     assert_equal [ Email ], ReadMark.readable_classes
   end
 
-  def test_reader_class
-    assert_equal Reader, ReadMark.reader_class
+  def test_reader_classes
+    assert_equal [ Reader, OtherClassReader ], ReadMark.reader_classes
   end
 
   def test_scope
     assert_equal [@email1, @email2], Email.unread_by(@reader)
     assert_equal [@email1, @email2], Email.unread_by(@other_reader)
+    assert_equal [@email1, @email2], Email.unread_by(@other_class_reader)
 
     assert_equal 2, Email.unread_by(@reader).count
     assert_equal 2, Email.unread_by(@other_reader).count
+    assert_equal 2, Email.unread_by(@other_class_reader).count
   end
 
   def test_with_read_marks_for
@@ -129,7 +133,7 @@ class UnreadTest < ActiveSupport::TestCase
     assert_equal Time.current, @reader.read_mark_global(Email).timestamp
     assert_equal [], @reader.read_marks.single
     assert_equal 0, ReadMark.single.count
-    assert_equal 2, ReadMark.global.count
+    assert_equal 3, ReadMark.global.count
   end
 
   def test_cleanup_read_marks
@@ -156,7 +160,7 @@ class UnreadTest < ActiveSupport::TestCase
     Email.reset_read_marks_for_all
 
     assert_equal 0, ReadMark.single.count
-    assert_equal 2, ReadMark.global.count
+    assert_equal 3, ReadMark.global.count
   end
 
 private

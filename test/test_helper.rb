@@ -18,6 +18,11 @@ class Reader < ActiveRecord::Base
   acts_as_reader
 end
 
+class OtherClassReader < ActiveRecord::Base
+  self.primary_key = 'number'
+  acts_as_reader
+end
+
 class Email < ActiveRecord::Base
   self.primary_key = 'messageid'
 
