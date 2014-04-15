@@ -7,7 +7,7 @@ module Unread
 
         if target == :all
           reset_read_marks_for_reader(reader)
-        elsif target.is_a?(Array)
+        elsif target.is_a?(Array) || target.is_a?(ActiveRecord::Relation)
           mark_array_as_read(target, reader)
         else
           raise ArgumentError
