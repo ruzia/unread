@@ -1,8 +1,9 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'active_support'
 require 'active_support/test_case'
 require 'active_record'
 require 'timecop'
+require 'yaml'
 
 configs = YAML.load_file(File.dirname(__FILE__) + '/database.yml')
 ActiveRecord::Base.configurations = configs
